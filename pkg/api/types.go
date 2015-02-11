@@ -763,6 +763,8 @@ type NodeStatus struct {
 	Phase NodePhase `json:"phase,omitempty"`
 	// Conditions is an array of current node conditions.
 	Conditions []NodeCondition `json:"conditions,omitempty"`
+	// External ID of the node assigned by the cloud provider
+	InstanceID string `json:"instanceID,omitempty"`
 }
 
 type NodePhase string

@@ -231,6 +231,12 @@ func (s *NodeController) PopulateIPs(nodes *api.NodeList) (*api.NodeList, error)
 			} else {
 				node.Status.HostIP = hostIP.String()
 			}
+			instanceID, err := instances.InstanceID(node.Name)
+			if err != nil {
+				glog.Errorf("error getting instance external id for %s: %v", node.Name, err)
+			} else {
+				node.Status.InstanceID = instanceID
+			}
 		}
 	} else {
 		for i := range nodes.Items {

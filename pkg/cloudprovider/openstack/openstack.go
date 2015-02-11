@@ -312,6 +312,11 @@ func (i *Instances) IPAddress(name string) (net.IP, error) {
 	return net.ParseIP(ip), err
 }
 
+// InstanceID returns the cloud provider ID of the specified instance.
+func (i *Instances) InstanceID(name string) (string, error) {
+	return "", nil
+}
+
 func (i *Instances) GetNodeResources(name string) (*api.NodeResources, error) {
 	glog.V(2).Infof("GetNodeResources(%v) called", name)
 

@@ -124,6 +124,11 @@ func (v *OVirtCloud) IPAddress(instance string) (net.IP, error) {
 	return ip[0], nil
 }
 
+// InstanceID returns the cloud provider ID of the specified instance.
+func (v *OVirtCloud) InstanceID(name string) (string, error) {
+        return "", nil
+}
+
 func getInstancesFromXml(body io.Reader) ([]string, error) {
 	if body == nil {
 		return nil, fmt.Errorf("ovirt rest-api response body is missing")

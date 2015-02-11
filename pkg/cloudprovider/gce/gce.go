@@ -307,6 +307,11 @@ func fqdnSuffix() (string, error) {
 	return strings.TrimSpace(string(fullHostname)[len(string(hostname)):]), nil
 }
 
+// InstanceID returns the cloud provider ID of the specified instance.
+func (gce *GCECloud) InstanceID(name string) (string, error) {
+	return "", nil
+}
+
 // List is an implementation of Instances.List.
 func (gce *GCECloud) List(filter string) ([]string, error) {
 	// GCE gives names without their fqdn suffix, so get that here for appending.

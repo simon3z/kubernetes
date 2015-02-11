@@ -59,6 +59,8 @@ type TCPLoadBalancer interface {
 type Instances interface {
 	// IPAddress returns an IP address of the specified instance.
 	IPAddress(name string) (net.IP, error)
+	// InstanceID returns the cloud provider ID of the specified instance.
+	InstanceID(name string) (string, error)
 	// List lists instances that match 'filter' which is a regular expression which must match the entire instance name (fqdn)
 	List(filter string) ([]string, error)
 	// GetNodeResources gets the resources for a particular node
