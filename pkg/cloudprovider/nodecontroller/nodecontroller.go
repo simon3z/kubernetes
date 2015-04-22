@@ -576,12 +576,9 @@ func (nc *NodeController) monitorNodeStatus() error {
 				}
 			}
 
-			// Report node events.
-			if readyCondition.Status == api.ConditionFalse && lastReadyCondition.Status != api.ConditionFalse {
-				nc.recordNodeEvent(node, "not_ready")
-			}
-			if readyCondition.Status == api.ConditionUnknown && lastReadyCondition.Status != api.ConditionUnknown {
-				nc.recordNodeEvent(node, "unknown")
+			// Report node event.
+			if readyCondition.Status != api.ConditionTrue && lastReadyCondition.Status == api.ConditionTrue {
+				nc.recordNodeEvent(node, "offline")
 			}
 		}
 	}
