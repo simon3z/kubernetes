@@ -384,7 +384,7 @@ func (nc *NodeController) recordNodeEvent(node *api.Node, event string) {
 		Kind:      "Node",
 		Name:      node.Name,
 		UID:       types.UID(node.Name),
-		Namespace: "",
+		Namespace: api.NamespaceDefault,
 	}
 	glog.V(2).Infof("Recording %s event message for node %s", event, node.Name)
 	// TODO: This requires a transaction, either both node status is updated

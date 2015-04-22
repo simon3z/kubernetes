@@ -188,7 +188,7 @@ func NewMainKubelet(
 		Kind:      "Node",
 		Name:      hostname,
 		UID:       types.UID(hostname),
-		Namespace: "",
+		Namespace: api.NamespaceDefault,
 	}
 
 	containerGC, err := newContainerGC(dockerClient, containerGCPolicy)
