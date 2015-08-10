@@ -816,6 +816,7 @@ func TestValidateContainers(t *testing.T) {
 	volumes := util.StringSet{}
 	capabilities.SetForTests(capabilities.Capabilities{
 		AllowPrivileged: true,
+		AllowUseHostIpc: true,
 	})
 
 	successCase := []api.Container{
@@ -917,6 +918,7 @@ func TestValidateContainers(t *testing.T) {
 
 	capabilities.SetForTests(capabilities.Capabilities{
 		AllowPrivileged: false,
+		AllowUseHostIpc: false,
 	})
 	errorCases := map[string][]api.Container{
 		"zero-length name":     {{Name: "", Image: "image", ImagePullPolicy: "IfNotPresent"}},
@@ -4001,17 +4003,21 @@ func TestValidateSecurityContext(t *testing.T) {
 	noPrivRequest := fullValidSC()
 	noPrivRequest.Privileged = nil
 
+	noHostIpcRequest := fullValidSC()
+	noHostIpcRequest.UseHostIpc = nil
+
 	noRunAsUser := fullValidSC()
 	noRunAsUser.RunAsUser = nil
 
 	successCases := map[string]struct {
 		sc *api.SecurityContext
 	}{
-		"all settings":    {allSettings},
-		"no capabilities": {noCaps},
-		"no selinux":      {noSELinux},
-		"no priv request": {noPrivRequest},
-		"no run as user":  {noRunAsUser},
+		"all settings":        {allSettings},
+		"no capabilities":     {noCaps},
+		"no selinux":          {noSELinux},
+		"no priv request":     {noPrivRequest},
+		"no host ipc request": {noHostIpcRequest},
+		"no run as user":      {noRunAsUser},
 	}
 	for k, v := range successCases {
 		if errs := ValidateSecurityContext(v.sc); len(errs) != 0 {
@@ -4022,6 +4028,10 @@ func TestValidateSecurityContext(t *testing.T) {
 	privRequestWithGlobalDeny := fullValidSC()
 	requestPrivileged := true
 	privRequestWithGlobalDeny.Privileged = &requestPrivileged
+
+	hostIpcRequestWithGlobalDeny := fullValidSC()
+	requestHostIpc := true
+	hostIpcRequestWithGlobalDeny.UseHostIpc = &requestHostIpc
 
 	negativeRunAsUser := fullValidSC()
 	var negativeUser int64 = -1
@@ -4034,6 +4044,11 @@ func TestValidateSecurityContext(t *testing.T) {
 	}{
 		"request privileged when capabilities forbids": {
 			sc:          privRequestWithGlobalDeny,
+			errorType:   "FieldValueForbidden",
+			errorDetail: "",
+		},
+		"request host ipc when capabilities forbids": {
+			sc:          hostIpcRequestWithGlobalDeny,
 			errorType:   "FieldValueForbidden",
 			errorDetail: "",
 		},

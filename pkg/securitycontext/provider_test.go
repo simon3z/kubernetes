@@ -65,6 +65,11 @@ func TestModifyHostConfig(t *testing.T) {
 	nilPrivHC := fullValidHostConfig()
 	nilPrivHC.Privileged = false
 
+	nilHostIpcSC := fullValidSecurityContext()
+	nilHostIpcSC.UseHostIpc = nil
+	nilHostIpcHC := fullValidHostConfig()
+	nilHostIpcHC.IpcMode = ""
+
 	nilCapsSC := fullValidSecurityContext()
 	nilCapsSC.Capabilities = nil
 	nilCapsHC := fullValidHostConfig()
@@ -90,6 +95,10 @@ func TestModifyHostConfig(t *testing.T) {
 		"nil privileged": {
 			securityContext: nilPrivSC,
 			expected:        nilPrivHC,
+		},
+		"nil useHostIpc": {
+			securityContext: nilHostIpcSC,
+			expected:        nilHostIpcHC,
 		},
 		"nil capabilities": {
 			securityContext: nilCapsSC,

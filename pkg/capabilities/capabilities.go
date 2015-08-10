@@ -25,6 +25,8 @@ import (
 type Capabilities struct {
 	AllowPrivileged bool
 
+	AllowUseHostIpc bool
+
 	// List of pod sources for which using host network is allowed.
 	HostNetworkSources []string
 
@@ -46,9 +48,10 @@ func Initialize(c Capabilities) {
 }
 
 // Setup the capability set.  It wraps Initialize for improving usibility.
-func Setup(allowPrivileged bool, hostNetworkSources []string, perConnectionBytesPerSec int64) {
+func Setup(allowPrivileged, allowUseHostIpc bool, hostNetworkSources []string, perConnectionBytesPerSec int64) {
 	Initialize(Capabilities{
 		AllowPrivileged:                        allowPrivileged,
+		AllowUseHostIpc:                        allowUseHostIpc,
 		HostNetworkSources:                     hostNetworkSources,
 		PerConnectionBandwidthLimitBytesPerSec: perConnectionBytesPerSec,
 	})
@@ -69,6 +72,7 @@ func Get() Capabilities {
 	if capabilities == nil {
 		Initialize(Capabilities{
 			AllowPrivileged:    false,
+			AllowUseHostIpc:    false,
 			HostNetworkSources: []string{},
 		})
 	}

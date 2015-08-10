@@ -2915,6 +2915,59 @@ func TestPrivilegeContainerDisallowed(t *testing.T) {
 	}
 }
 
+func TestUseHostIpcContainerAllowed(t *testing.T) {
+	testKubelet := newTestKubelet(t)
+	kubelet := testKubelet.kubelet
+
+	capabilities.SetForTests(capabilities.Capabilities{
+		AllowUseHostIpc: true,
+	})
+	useHostIpc := true
+	pod := &api.Pod{
+		ObjectMeta: api.ObjectMeta{
+			UID:       "12345678",
+			Name:      "foo",
+			Namespace: "new",
+		},
+		Spec: api.PodSpec{
+			Containers: []api.Container{
+				{Name: "foo", SecurityContext: &api.SecurityContext{UseHostIpc: &useHostIpc}},
+			},
+		},
+	}
+	kubelet.podManager.SetPods([]*api.Pod{pod})
+	err := kubelet.syncPod(pod, nil, container.Pod{}, SyncPodUpdate)
+	if err != nil {
+		t.Errorf("expected pod infra creation to succeed: %v", err)
+	}
+}
+
+func TestUseHostIpcContainerDisallowed(t *testing.T) {
+	testKubelet := newTestKubelet(t)
+	kubelet := testKubelet.kubelet
+
+	capabilities.SetForTests(capabilities.Capabilities{
+		AllowUseHostIpc: false,
+	})
+	useHostIpc := true
+	pod := &api.Pod{
+		ObjectMeta: api.ObjectMeta{
+			UID:       "12345678",
+			Name:      "foo",
+			Namespace: "new",
+		},
+		Spec: api.PodSpec{
+			Containers: []api.Container{
+				{Name: "foo", SecurityContext: &api.SecurityContext{UseHostIpc: &useHostIpc}},
+			},
+		},
+	}
+	err := kubelet.syncPod(pod, nil, container.Pod{}, SyncPodUpdate)
+	if err == nil {
+		t.Errorf("expected pod infra creation to fail")
+	}
+}
+
 func TestFilterOutTerminatedPods(t *testing.T) {
 	testKubelet := newTestKubelet(t)
 	kubelet := testKubelet.kubelet

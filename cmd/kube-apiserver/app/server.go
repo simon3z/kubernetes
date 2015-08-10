@@ -94,6 +94,7 @@ type APIServer struct {
 	EtcdPathPrefix             string
 	CorsAllowedOriginList      []string
 	AllowPrivileged            bool
+	AllowUseHostIpc            bool
 	ServiceClusterIPRange      util.IPNet // TODO: make this a list
 	ServiceNodePortRange       util.PortRange
 	EnableLogsSupport          bool
@@ -197,6 +198,7 @@ func (s *APIServer) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&s.EtcdPathPrefix, "etcd-prefix", s.EtcdPathPrefix, "The prefix for all resource paths in etcd.")
 	fs.StringSliceVar(&s.CorsAllowedOriginList, "cors-allowed-origins", s.CorsAllowedOriginList, "List of allowed origins for CORS, comma separated.  An allowed origin can be a regular expression to support subdomain matching.  If this list is empty CORS will not be enabled.")
 	fs.BoolVar(&s.AllowPrivileged, "allow-privileged", s.AllowPrivileged, "If true, allow privileged containers.")
+	fs.BoolVar(&s.AllowUseHostIpc, "allow-host-ipc", s.AllowUseHostIpc, "If true, allow host ipc mode for containers.")
 	fs.Var(&s.ServiceClusterIPRange, "service-cluster-ip-range", "A CIDR notation IP range from which to assign service cluster IPs. This must not overlap with any IP ranges assigned to nodes for pods.")
 	fs.Var(&s.ServiceClusterIPRange, "portal-net", "Deprecated: see --service-cluster-ip-range instead.")
 	fs.MarkDeprecated("portal-net", "see --service-cluster-ip-range instead.")
@@ -267,6 +269,7 @@ func (s *APIServer) Run(_ []string) error {
 
 	capabilities.Initialize(capabilities.Capabilities{
 		AllowPrivileged: s.AllowPrivileged,
+		AllowUseHostIpc: s.AllowUseHostIpc,
 		// TODO(vmarmol): Implement support for HostNetworkSources.
 		HostNetworkSources:                     []string{},
 		PerConnectionBandwidthLimitBytesPerSec: s.MaxConnectionBytesPerSec,

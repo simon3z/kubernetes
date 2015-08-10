@@ -2002,6 +2002,12 @@ func convert_api_SecurityContext_To_v1_SecurityContext(in *api.SecurityContext, 
 	} else {
 		out.RunAsUser = nil
 	}
+	if in.UseHostIpc != nil {
+		out.UseHostIpc = new(bool)
+		*out.UseHostIpc = *in.UseHostIpc
+	} else {
+		out.UseHostIpc = nil
+	}
 	return nil
 }
 
@@ -4343,6 +4349,12 @@ func convert_v1_SecurityContext_To_api_SecurityContext(in *SecurityContext, out 
 		*out.RunAsUser = *in.RunAsUser
 	} else {
 		out.RunAsUser = nil
+	}
+	if in.UseHostIpc != nil {
+		out.UseHostIpc = new(bool)
+		*out.UseHostIpc = *in.UseHostIpc
+	} else {
+		out.UseHostIpc = nil
 	}
 	return nil
 }

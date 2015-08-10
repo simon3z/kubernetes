@@ -1240,7 +1240,11 @@ func (dm *DockerManager) runContainerInPod(pod *api.Pod, container *api.Containe
 		return "", err
 	}
 
-	id, err := dm.runContainer(pod, container, opts, ref, netMode, ipcMode)
+	containerIpcMode := ipcMode
+	if securitycontext.HasUseHostIpcRequest(container) {
+		containerIpcMode = "host"
+	}
+	id, err := dm.runContainer(pod, container, opts, ref, netMode, containerIpcMode)
 	if err != nil {
 		return "", err
 	}

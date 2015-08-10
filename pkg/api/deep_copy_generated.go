@@ -1803,6 +1803,12 @@ func deepCopy_api_SecurityContext(in SecurityContext, out *SecurityContext, c *c
 	} else {
 		out.RunAsUser = nil
 	}
+	if in.UseHostIpc != nil {
+		out.UseHostIpc = new(bool)
+		*out.UseHostIpc = *in.UseHostIpc
+	} else {
+		out.UseHostIpc = nil
+	}
 	return nil
 }
 

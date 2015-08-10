@@ -35,6 +35,18 @@ func HasPrivilegedRequest(container *api.Container) bool {
 	return *container.SecurityContext.Privileged
 }
 
+// HasUseHostIpcRequest returns the value of SecurityContext.UseHostIpc, taking into account
+// the possibility of nils
+func HasUseHostIpcRequest(container *api.Container) bool {
+	if container.SecurityContext == nil {
+		return false
+	}
+	if container.SecurityContext.UseHostIpc == nil {
+		return false
+	}
+	return *container.SecurityContext.UseHostIpc
+}
+
 // HasCapabilitiesRequest returns true if Adds or Drops are defined in the security context
 // capabilities, taking into account nils
 func HasCapabilitiesRequest(container *api.Container) bool {

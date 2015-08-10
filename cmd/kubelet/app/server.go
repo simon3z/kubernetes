@@ -81,6 +81,7 @@ type KubeletServer struct {
 	DockerEndpoint                 string
 	RootDirectory                  string
 	AllowPrivileged                bool
+	AllowUseHostIpc                bool
 	HostNetworkSources             string
 	RegistryPullQPS                float64
 	RegistryBurst                  int
@@ -213,6 +214,7 @@ func (s *KubeletServer) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&s.DockerEndpoint, "docker-endpoint", s.DockerEndpoint, "If non-empty, use this for the docker endpoint to communicate with")
 	fs.StringVar(&s.RootDirectory, "root-dir", s.RootDirectory, "Directory path for managing kubelet files (volume mounts,etc).")
 	fs.BoolVar(&s.AllowPrivileged, "allow-privileged", s.AllowPrivileged, "If true, allow containers to request privileged mode. [default=false]")
+	fs.BoolVar(&s.AllowUseHostIpc, "allow-host-ipc", s.AllowUseHostIpc, "If true, allow containers to request ipc host mode. [default=false]")
 	fs.StringVar(&s.HostNetworkSources, "host-network-sources", s.HostNetworkSources, "Comma-separated list of sources from which the Kubelet allows pods to use of host network. For all sources use \"*\" [default=\"file\"]")
 	fs.Float64Var(&s.RegistryPullQPS, "registry-qps", s.RegistryPullQPS, "If > 0, limit registry pull QPS to this value.  If 0, unlimited. [default=0.0]")
 	fs.IntVar(&s.RegistryBurst, "registry-burst", s.RegistryBurst, "Maximum size of a bursty pulls, temporarily allows pulls to burst to this number, while still not exceeding registry-qps.  Only used if --registry-qps > 0")
@@ -308,6 +310,7 @@ func (s *KubeletServer) KubeletConfig() (*KubeletConfig, error) {
 	return &KubeletConfig{
 		Address:                        s.Address,
 		AllowPrivileged:                s.AllowPrivileged,
+		AllowUseHostIpc:                s.AllowUseHostIpc,
 		HostNetworkSources:             hostNetworkSources,
 		HostnameOverride:               s.HostnameOverride,
 		RootDirectory:                  s.RootDirectory,
@@ -638,7 +641,7 @@ func RunKubelet(kcfg *KubeletConfig, builder KubeletBuilder) error {
 	} else {
 		glog.Warning("No api server defined - no events will be sent to API server.")
 	}
-	capabilities.Setup(kcfg.AllowPrivileged, kcfg.HostNetworkSources, 0)
+	capabilities.Setup(kcfg.AllowPrivileged, kcfg.AllowUseHostIpc, kcfg.HostNetworkSources, 0)
 
 	credentialprovider.SetPreferredDockercfgPath(kcfg.RootDirectory)
 
@@ -712,6 +715,7 @@ type KubeletConfig struct {
 	CadvisorInterface              cadvisor.Interface
 	Address                        util.IP
 	AllowPrivileged                bool
+	AllowUseHostIpc                bool
 	HostNetworkSources             []string
 	HostnameOverride               string
 	RootDirectory                  string

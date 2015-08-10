@@ -80,6 +80,7 @@ be addressed with security contexts:
     nodes from containers:
     * All containers run as a single non-root user
     * Privileged containers are disabled
+    * Containers using host ipc are disabled
     * All containers run with a particular MCS label
     * Kernel capabilities like CHOWN and MKNOD are removed from containers
 
@@ -168,6 +169,9 @@ type SecurityContext struct {
 
 	// RunAsUser is the UID to run the entrypoint of the container process.
 	RunAsUser *int64
+
+	// Run the container using the host ipc mode
+	UseHostIpc *bool
 }
 
 // SELinuxOptions are the labels to be applied to the container.

@@ -57,6 +57,14 @@ func canRunPod(pod *api.Pod) error {
 			}
 		}
 	}
+
+	if !capabilities.Get().AllowUseHostIpc {
+		for _, container := range pod.Spec.Containers {
+			if securitycontext.HasUseHostIpcRequest(&container) {
+				return fmt.Errorf("pod with UID %q specified a host ipc container, but is disallowed", pod.UID)
+			}
+		}
+	}
 	return nil
 }
 

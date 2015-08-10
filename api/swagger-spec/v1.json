@@ -12774,6 +12774,10 @@
       "type": "integer",
       "format": "int64",
       "description": "the user id that runs the first process in the container; see http://releases.k8s.io/HEAD/docs/design/security_context.md#security-context"
+     },
+     "useHostIpc": {
+      "type": "boolean",
+      "description": "run the container using the host ipc mode; see http://releases.k8s.io/HEAD/docs/design/security_context.md#security-context"
      }
     }
    },

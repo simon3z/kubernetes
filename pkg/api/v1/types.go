@@ -2030,6 +2030,9 @@ type SecurityContext struct {
 
 	// RunAsUser is the UID to run the entrypoint of the container process.
 	RunAsUser *int64 `json:"runAsUser,omitempty" description:"the user id that runs the first process in the container; see http://releases.k8s.io/HEAD/docs/design/security_context.md#security-context"`
+
+	// Run the container using the host ipc mode
+	UseHostIpc *bool `json:"useHostIpc,omitempty" description:"run the container using the host ipc mode; see http://releases.k8s.io/HEAD/docs/design/security_context.md#security-context"`
 }
 
 // SELinuxOptions are the labels to be applied to the container

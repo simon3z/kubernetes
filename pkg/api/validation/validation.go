@@ -1795,6 +1795,12 @@ func ValidateSecurityContext(sc *api.SecurityContext) errs.ValidationErrorList {
 		}
 	}
 
+	if sc.UseHostIpc != nil {
+		if *sc.UseHostIpc && !capabilities.Get().AllowUseHostIpc {
+			allErrs = append(allErrs, errs.NewFieldForbidden("useHostIpc", *sc.UseHostIpc))
+		}
+	}
+
 	if sc.RunAsUser != nil {
 		if *sc.RunAsUser < 0 {
 			allErrs = append(allErrs, errs.NewFieldInvalid("runAsUser", *sc.RunAsUser, "runAsUser cannot be negative"))
